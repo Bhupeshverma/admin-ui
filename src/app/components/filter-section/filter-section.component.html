@@ -1,0 +1,10 @@
+
+<div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="30px" style="padding: 8px">
+    <ng-container *ngIf="isSelected">
+        <button mat-raised-button color="accent" (click)="deleteAllSelected()">Delete Selected</button>
+    </ng-container>
+    <mat-form-field appearance="standard" class="search-bar">
+        <!-- <mat-label>Filter</mat-label> -->
+        <input matInput (keyup)="valueChanged($event)" placeholder="Search" #input>
+    </mat-form-field>
+</div>

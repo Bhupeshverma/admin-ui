@@ -42,5 +42,15 @@
     font-size: 14px;
   }
   
+  @media only screen and (max-width: 600px) {
+  .conatiner {
+    // max-width: fit-content;
+    // overflow-x: scroll;
+    width: fit-content;
+  }
+  .table-container {
+    width: fit-content;
+  }
+}
   
   

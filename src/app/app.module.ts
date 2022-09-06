@@ -18,12 +18,16 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { DataTableComponent } from './data-table/data-table.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { TableRowComponent } from './components/table-row/table-row.component';
+import { FilterSectionComponent } from './components/filter-section/filter-section.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     DataTableComponent,
+    TableRowComponent,
+    FilterSectionComponent,
   ],
   imports: [
     BrowserModule,

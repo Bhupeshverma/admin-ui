@@ -1,136 +1,59 @@
-<div class="conatiner mat-elevation-z8 ">
-    <!-- <ng-container *ngIf="selection.selected.length">
-      <button mat-raised-button color="accent" (click)="deleteAllSelected()">Delete Selected</button>
-    </ng-container> -->
+<div class="conatiner mat-elevation-z8">
   <div class="table-container">
-    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="30px" style="padding: 8px">
-      <ng-container *ngIf="selection.selected.length > 0">
-        <button mat-raised-button color="accent" (click)="deleteAllSelected()">Delete Selected</button>
-      </ng-container>
-      <mat-form-field appearance="standard" class="search-bar">
-        <!-- <mat-label>Filter</mat-label> -->
-        <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input>
-      </mat-form-field>
-    </div>
-  
-    <table mat-table class="full-width-table" matSort aria-label="Elements" [dataSource]="dataSource" id="userTable">
-        <!-- Checkbox Column -->
-    <ng-container matColumnDef="select">
-      <th mat-header-cell *matHeaderCellDef >
-        <mat-checkbox (change)="$event ? toggleAllRows() : null"
-                      [checked]="selection.hasValue() && isAllSelected()"
-                      [indeterminate]="selection.hasValue() && !isAllSelected()"
-                      [aria-label]="checkboxLabel()">
-        </mat-checkbox>
-      </th>
-      <td mat-cell *matCellDef="let row">
-        <mat-checkbox (click)="$event.stopPropagation()"
-        
-                      (change)="$event ? selection.toggle(row) : null"
-                      [checked]="selection.isSelected(row)"
-                      [aria-label]="checkboxLabel(row)">
-        </mat-checkbox>
-      </td>
-    </ng-container>
-      <!-- Id Column -->
-      <!-- <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-        <td mat-cell *matCellDef="let row"></td>
-
-      </ng-container> -->
-  
-      <!-- Name Column -->
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="headerColumn">Name</th>
-        <td mat-cell *matCellDef="let row">
-            <ng-container *ngIf="!row.isEdit;else editname">
-                {{row.name}}
-            </ng-container>
-            <ng-template  #editname>
-                <mat-form-field class="form-input" appearance="standard" class="input-edit-bar">
-                    <input
-                      matInput
-                      type="text"
-                      [(ngModel)]="row.name"
-                      (change)="inputHandler($event, row.id, row.name)"
-                    />
-                  </mat-form-field>
-            </ng-template>
-        </td>
-      </ng-container>
-      <!-- Email Column -->  
-      <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="headerColumn">Email</th>
-        <td mat-cell *matCellDef="let row">
-            <!-- {{row.email}} -->
-            <ng-container *ngIf="!row.isEdit;else editemail">
-                {{row.email}}
-            </ng-container>
-            <ng-template  #editemail>
-                <mat-form-field class="form-input" appearance="standard" class="input-edit-bar">
-                    <input
-                      matInput
-                      type="email"
-                      [(ngModel)]="row.email"
-                      (change)="inputHandler($event, row.id, row.email)"
-                    />
-                  </mat-form-field>
-            </ng-template>
-        </td>
-      </ng-container>
-      <!-- Role Column --> 
-      <ng-container matColumnDef="role">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="headerColumn">Role</th>
-        <td mat-cell *matCellDef="let row">
-            <!-- {{row.role}} -->
-            <ng-container *ngIf="!row.isEdit;else editrole">
-                {{row.role}}
-            </ng-container>
-            <ng-template  #editrole>
-                <mat-form-field class="form-input" appearance="standard" class="input-edit-bar">
-                    <input
-                      matInput
-                      type="text"
-                      [(ngModel)]="row.role"
-                      (change)="inputHandler($event, row.id, row.role)"
-                    />
-                  </mat-form-field>
-            </ng-template>
-        </td>
-      </ng-container>
-      <!-- Actions Column --> 
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef class="headerColumn">Actions</th>
-        <td mat-cell *matCellDef="let row">
-          <ng-container *ngIf="!row.isEdit;else editactions">
-            <button mat-icon-button  aria-label="icon-button with a edit icon" (click)="row.isEdit = !row.isEdit">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button color="accent" aria-label="icon-button with a delete icon" (click)="deleteRow(row)">
-                <mat-icon>delete</mat-icon>
-              </button>
+    <app-filter-section
+      [filter]="dataSource"
+      (dataChanged)="deleteSelectedRows($event)"
+    ></app-filter-section>
+    <table
+      mat-table
+      class="full-width-table"
+      matSort
+      aria-label="Elements"
+      [dataSource]="dataSource"
+      id="userTable"
+    >
+      <ng-container
+        [matColumnDef]="column"
+        *ngFor="let column of displayedColumns"
+      >
+        <th mat-header-cell *matHeaderCellDef class="headerColumn" sticky="true">
+          <ng-container *ngIf="column === 'select';else headerView">
+            <mat-checkbox
+              (change)="$event ? dataSource.toggleAllRows() : null"
+              [checked]="
+                dataSource.selection.hasValue() && dataSource.isAllSelected()
+              "
+              [indeterminate]="
+                dataSource.selection.hasValue() && !dataSource.isAllSelected()
+              "
+              [aria-label]="dataSource.checkboxLabel()"
+            >
+            </mat-checkbox>
           </ng-container>
-          <ng-template #editactions>
-            <button
-                mat-icon-button
-                (click)="editRow(row)"
-                [disabled]="disableSubmit(row.id)"
-                >
-                <mat-icon>done</mat-icon>
-            </button>
+          <ng-template #headerView>
+            {{ column }}
           </ng-template>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <app-table-row 
+            [dataSource]="dataSource" 
+            [row]="row" 
+            [column]="column"
+            (dataChanged)="deleteRow($event)"
+            ></app-table-row>
         </td>
       </ng-container>
-  
-      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" ></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
   </div>
-  <mat-paginator #paginator
+  <mat-paginator
+    #paginator
     [length]="dataSource?.data?.length"
     [pageIndex]="0"
     [pageSize]="10"
     [pageSizeOptions]="[5, 10, 20]"
-    aria-label="Select page">
-    </mat-paginator>
-  </div>
+    aria-label="Select page"
+  >
+  </mat-paginator>
+</div>

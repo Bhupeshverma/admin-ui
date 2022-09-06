@@ -1,0 +1,29 @@
+<ng-container *ngIf="column === 'select' && dataSource">
+  <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? dataSource?.selection?.toggle(row) : null"
+    [checked]="dataSource?.selection?.isSelected(row)" [aria-label]="dataSource.checkboxLabel(row)">
+  </mat-checkbox>
+</ng-container>
+<ng-container *ngIf="column === 'actions'">
+  <ng-container *ngIf="!row.isEdit; else editactions">
+    <button mat-icon-button aria-label="icon-button with a edit icon" (click)="row.isEdit = !row.isEdit">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button color="accent" aria-label="icon-button with a delete icon" (click)="deleteRow(row)">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </ng-container>
+  <ng-template #editactions>
+    <button mat-icon-button (click)="editRow(row)" [disabled]="disableSubmit(row.id)">
+      <mat-icon>done</mat-icon>
+    </button>
+  </ng-template>
+</ng-container>
+<ng-container *ngIf="row.isEdit; else view">
+  <mat-form-field class="form-input" appearance="standard" class="input-edit-bar"
+    *ngIf="column !== 'select' && column !== 'actions'">
+    <input matInput type="row[column]" [(ngModel)]="row[column]" (change)="inputHandler($event, row.id, row.email)" />
+  </mat-form-field>
+</ng-container>
+<ng-template #view>
+  {{ row[column] }}
+</ng-template>
